@@ -1,0 +1,51 @@
+name: Refresh block lists
+
+# Every Monday, fetch the latest EasyList and EasyPrivacy, convert them for WebKit,
+# and publish them in lists/. Brightsurf checks lists/blocklists.json once a week.
+on:
+  schedule:
+    - cron: "17 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download EasyList and EasyPrivacy
+        run: |
+          curl -fsSL --retry 3 -o easylist.txt https://easylist.to/easylist/easylist.txt
+          curl -fsSL --retry 3 -o easyprivacy.txt https://easylist.to/easylist/easyprivacy.txt
+
+      - name: Convert for WebKit
+        run: python3 tools/convert.py easylist.txt easyprivacy.txt lists
+
+      - name: Check the lists look sane
+        # Stops a broken or truncated download from replacing good lists.
+        run: |
+          python3 - <<'PY'
+          import json
+          m = json.load(open("lists/blocklists.json"))
+          total = sum(e["rules"] for e in m["lists"])
+          print("rules:", total)
+          assert total > 80000, "too few rules, refusing to publish"
+          for e in m["lists"]:
+              json.load(open("lists/" + e["file"]))
+          PY
+
+      - name: Publish if anything changed
+        run: |
+          rm -f easylist.txt easyprivacy.txt
+          if git diff --quiet -- lists; then
+            echo "No changes this week."
+            exit 0
+          fi
+          git config user.name "brightsurf-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lists
+          git commit -m "Refresh block lists ($(python3 -c 'import json;print(json.load(open("lists/blocklists.json"))["adsVersion"])'))"
+          git push

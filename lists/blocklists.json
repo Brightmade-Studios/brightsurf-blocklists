@@ -1,0 +1,32 @@
+{
+  "format": 1,
+  "lists": [
+    {
+      "file": "ads-1.json",
+      "rules": 25000
+    },
+    {
+      "file": "ads-2.json",
+      "rules": 25000
+    },
+    {
+      "file": "ads-3.json",
+      "rules": 10636
+    },
+    {
+      "file": "trackers-1.json",
+      "rules": 25000
+    },
+    {
+      "file": "trackers-2.json",
+      "rules": 25000
+    },
+    {
+      "file": "trackers-3.json",
+      "rules": 8530
+    }
+  ],
+  "adsVersion": "202611271354",
+  "trackersVersion": "202611271354",
+  "version": "660a012723bf"
+}
