@@ -11,7 +11,7 @@
     },
     {
       "file": "ads-3.json",
-      "rules": 10636
+      "rules": 10661
     },
     {
       "file": "trackers-1.json",
@@ -23,10 +23,10 @@
     },
     {
       "file": "trackers-3.json",
-      "rules": 8530
+      "rules": 8531
     }
   ],
-  "adsVersion": "202611271354",
-  "trackersVersion": "202611271354",
-  "version": "660a012723bf"
+  "adsVersion": "202611271603",
+  "trackersVersion": "202611271603",
+  "version": "e88b09a76a95"
 }
